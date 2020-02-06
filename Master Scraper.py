@@ -5,7 +5,7 @@ import time
 import smtplib, ssl
 
 port = 465
-password = input("Type your password: ") #whytherats
+password = input("Type your password: ")
 
 context = ssl.create_default_context()
 
