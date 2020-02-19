@@ -103,3 +103,35 @@ def add_prices(url_list):
         email("cheap jay pod")
 
     return price_list
+
+def get_soup(url):
+    '''Gets a soup from a URL'''
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"}
+    details = {"name": "", "price": 0, "deal": True, "url": ""}
+    _url = extract_url(url)
+    #print(_url)
+    if _url is None:
+        soup = None
+    else:
+        page = requests.get(url, headers=headers)
+        soup = BeautifulSoup(page.content, "html5lib")
+    return soup
+
+def get_price(soup):
+    '''Gets price from soup'''
+    price = soup.find(id="priceblock_dealprice")
+
+    if price is None:
+        price = soup.find(id="priceblock_ourprice")
+    return price
+
+def get_title(soup):
+    '''Gets title from soup'''
+    title = soup.find(id = "productTitle")
+    return title.get_text().strip()
+
+
+def get_deal(soup):
+    '''Determines if there's a deal on '''
+    pass
