@@ -19,22 +19,25 @@ url_list = ["https://www.amazon.co.uk/LEGO-71707-LEGO-71707-NINJAGO-Kais-Mech-Je
             "https://www.amazon.co.uk/Ninjago-71715-LEGO-71715-NINJAGO-Jay-Avatar-Arcade-Pod-Portable-Playset-Collectible-Prime-Empire-Ninja-Toys-for-Kids/dp/B07WC19M4V/ref=sr_1_4?keywords=lego+ninjago+arcade%5D%23&qid=1580913458&sr=8-4"
             ]
 
+# Get soups, titles and set numbers
+
+print('Getting soups...')
 soup_list = [scl.get_soup(u) for u in url_list]
+
+print('Extracting titles and set numbers...')
 title_list = [scl.get_title(s) for s in soup_list]
 set_number_list = [t[5:10] for t in title_list]
 
-# Temporary, for porting
-title_list = set_number_list
-
 print("Set numbers watched: ")
-print(title_list)
+print(set_number_list)
 
 with open('Item Numbers.txt', 'w') as file:
-        file.write(str(title_list))
+        file.write(str(set_number_list))
 
 while True:
-    price_list_print = scl.add_prices(url_list)
-    #print(str(price_list_print))
+     ## Refresh soups and prices
+    soup_list = [scl.get_soup(u) for u in url_list]
+    price_list_print = scl.add_prices(soup_list)
     with open('Price Data.txt', 'a') as file:
         file.write(str(price_list_print)+"\n")
     print("Prices updated at "+str(datetime.datetime.now()))

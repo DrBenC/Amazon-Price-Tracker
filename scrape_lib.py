@@ -58,51 +58,17 @@ def get_product_details(url):
             details = None
         return details
 
-#test = (get_product_details(url_list[0]))
-#print(test)
-
 def email(message):
-    with smtplib.SMTP_SSL("smtp.gmail.com", port, context = context) as server:
+    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
         server.login("drbencpython@gmail.com", password)
         server.sendmail("drbencpython@gmail.com", "coulsonba@gmail.com", str(message))
         print("Cheap price detected, email sent")
 
-def add_prices(url_list):
-    price_list = [[], [], [], [], [], [], [], [], [], [], []]
+def add_prices(soup_list):
     timestamp = datetime.datetime.now()
-    price_list[0].append(timestamp)
-    for n, url_l in enumerate(url_list):
-        url_l_r = (get_product_details(url_l))
-        url_l_price = url_l_r["price"]
-        price_list[n+1].append(url_l_price)
-
-    prices = [float(str(n).replace("[", "]").replace("]", "")) for n in price_list[1:]]
-    print("Prices are as follows: ")
-    print(prices)
-
-    #set email price thresholds here
-    if int(prices[0]) < 10:
-        email("cheap 71708")
-    elif float(prices[1]) < 18:
-        email("cheap gamers market")
-    elif float(prices[2]) < 18:
-        email("cheap car")
-    elif float(prices[3]) < 15:
-        email("cheap racers")
-    elif float(prices[4]) < 27:
-        email("cheap dragon")
-    elif float(prices[5]) < 30:
-        email("cheap mandalorian walker")
-    elif float(prices[6]) < 12:
-        email("cheap welcome to hidden side")
-    elif float(prices[7]) < 7:
-        email("cheap kai pod")
-    elif float(prices[8]) < 7:
-        email("cheap lloyd pod")
-    elif float(prices[9]) < 7:
-        email("cheap jay pod")
-
-    return price_list
+    prices = [get_price(s) for s in soup_list]
+    price_list = [timestamp] + prices
+    return [price_list]
 
 def get_soup(url):
     '''Gets a soup from a URL'''
@@ -124,7 +90,8 @@ def get_price(soup):
 
     if price is None:
         price = soup.find(id="priceblock_ourprice")
-    return price
+    price = get_converted_price(price.get_text())
+    return [price]
 
 def get_title(soup):
     '''Gets title from soup'''
@@ -135,3 +102,27 @@ def get_title(soup):
 def get_deal(soup):
     '''Determines if there's a deal on '''
     pass
+
+def good_price_check():
+    pass
+    # #set email price thresholds here
+    # if int(prices[0]) < 10:
+    #     email("cheap 71708")
+    # elif float(prices[1]) < 18:
+    #     email("cheap gamers market")
+    # elif float(prices[2]) < 18:
+    #     email("cheap car")
+    # elif float(prices[3]) < 15:
+    #     email("cheap racers")
+    # elif float(prices[4]) < 27:
+    #     email("cheap dragon")
+    # elif float(prices[5]) < 30:
+    #     email("cheap mandalorian walker")
+    # elif float(prices[6]) < 12:
+    #     email("cheap welcome to hidden side")
+    # elif float(prices[7]) < 7:
+    #     email("cheap kai pod")
+    # elif float(prices[8]) < 7:
+    #     email("cheap lloyd pod")
+    # elif float(prices[9]) < 7:
+    #     email("cheap jay pod")
