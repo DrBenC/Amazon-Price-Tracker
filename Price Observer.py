@@ -2,6 +2,12 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 
+def extract_lego(number):
+    name_set = item_numbers.columns[number]
+    price_set = [float(n.replace("[", "]").replace("]", "")) for n in list(data_raw.iloc[:, number+8])]
+    print(price_set)
+    return name_set, price_set
+
 data_raw = pd.read_csv("Price Data.txt")
 item_numbers = pd.read_csv("Item Numbers.txt")
 
@@ -26,20 +32,14 @@ hours_clean = clean_list(hours)
 months_clean = clean_list(months)
 minutes_clean = clean_list(minutes)
 
-#here we remake the datetime because I don't know how else to do it
-times = [(str(y)+","+str(m)+","+str(d)+":"+str(h)+":"+str(mi)) for y, m ,d ,h, mi in (zip(years, months_clean, days_clean, hours_clean, minutes_clean))]
-    
-def extract_lego(number):
-    name_set = item_numbers.columns[number]
-    price_set = [float(n.replace("[", "]").replace("]", "")) for n in list(data_raw.iloc[:, number+8])]
-    print(price_set)
-    return name_set, price_set
+#here we remake the datetime with fstrings
+times = [f"{y},{m},{d}:{h}:{mi}" for y, m ,d ,h, mi in (zip(years, months_clean, days_clean, hours_clean, minutes_clean))]
 
 for n in range(len(item_numbers.columns)):
     x, y = extract_lego(n-1)  
     plt.plot(times, y, label = x)
-    plt.xticks(rotation = 90)
-    plt.legend()
+plt.xticks(rotation = 90)
+plt.legend()
 plt.tight_layout()
 plt.show()
 
